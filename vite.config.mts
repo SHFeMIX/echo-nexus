@@ -8,6 +8,7 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import { VarletImportResolver } from '@varlet/import-resolver'
 import UnoCSS from 'unocss/vite'
 import { isDev, port, r } from './scripts/utils'
 import packageJson from './package.json'
@@ -25,7 +26,6 @@ export const sharedConfig: UserConfig = {
   },
   plugins: [
     Vue(),
-
     AutoImport({
       imports: [
         'vue',
@@ -37,7 +37,9 @@ export const sharedConfig: UserConfig = {
       ],
       dts: r('src/auto-imports.d.ts'),
     }),
-
+    AutoImport({
+      resolvers: [VarletImportResolver({ autoImport: true })],
+    }),
     // https://github.com/antfu/unplugin-vue-components
     Components({
       dirs: [r('src/components')],
@@ -48,6 +50,7 @@ export const sharedConfig: UserConfig = {
         IconsResolver({
           prefix: '',
         }),
+        VarletImportResolver(),
       ],
     }),
 

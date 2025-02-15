@@ -1,3 +1,3 @@
 import { useWebExtensionStorage } from '~/composables/useWebExtensionStorage'
 
-export const storageDemo = useWebExtensionStorage('webext-demo', 'Storage Demo')
+export const redirectRules = useWebExtensionStorage('redirectRules', [1, 2, 3])

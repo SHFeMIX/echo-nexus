@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@varlet/ui':
+        specifier: ^3.8.7
+        version: 3.8.7(vue@3.4.38(typescript@5.5.4))
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^2.27.0
@@ -35,6 +39,9 @@ importers:
       '@unocss/reset':
         specifier: ^0.62.2
         version: 0.62.2
+      '@varlet/import-resolver':
+        specifier: ^3.8.7
+        version: 3.8.7
       '@vitejs/plugin-vue':
         specifier: ^5.1.2
         version: 5.1.2(vite@5.4.2(@types/node@22.5.0))(vue@3.4.38(typescript@5.5.4))
@@ -575,6 +582,12 @@ packages:
     cpu: [x64]
     os: [openbsd]
 
+  '@esbuild/openbsd-x64@0.23.1':
+    resolution: {integrity: sha512-aY2gMmKmPhxfU+0EdnN+XNtGbjfQgwZj43k8G3fyrDM/UdZww6xrWxmDkuz2eCZchqVeABjV5BpildOrUbBTqA==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+    os: [openbsd]
+
   '@esbuild/sunos-x64@0.21.5':
     resolution: {integrity: sha512-6+gjmFpfy0BHU5Tpptkuh8+uw3mnrvgs+dSPQXQOv3ekbordwnzTVEb4qnIvQcYXq6gzkyTnoZ9dZG+D4garKg==}
     engines: {node: '>=12'}
@@ -769,6 +782,9 @@ packages:
 
   '@polka/url@1.0.0-next.25':
     resolution: {integrity: sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==}
+
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
   '@rollup/pluginutils@5.1.0':
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
@@ -1125,6 +1141,25 @@ packages:
     resolution: {integrity: sha512-ES39SL7+0UDTM5IvIiDVodH4duUIzGXug/bhuDHHhhtUBoengH+Oe59jURzRChDj4Pf3cyqMtTwo5amoz3lV2Q==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0
+
+  '@varlet/icons@3.8.7':
+    resolution: {integrity: sha512-+3X+KF5peGiyKuebglAkI7KYKfzBJr0c+2FEx4xRz/v4z8OftNP50TeT/OB7G1WpMYnKs/3pkkUGtzMmgpYkhA==}
+
+  '@varlet/import-resolver@3.8.7':
+    resolution: {integrity: sha512-rTLfOHeW1cVpiZJprUo3GROwVLA/D1v4U+ndOctgm3egK/7pHRsp6+arDFAaQctOoqxdM3MarWIsmIsbHcl58Q==}
+
+  '@varlet/shared@3.8.7':
+    resolution: {integrity: sha512-g/I2+GQfosUopBSqQY3pFSexYPhKCZ3MHDFFIng3qUIBcr30LXefa21MK7AhkoKjTzNhbFMWRIBmTM/f/p/wgQ==}
+
+  '@varlet/ui@3.8.7':
+    resolution: {integrity: sha512-Y3lWAPU7G+ws7J3iaW2FRsxBla08m7PKzqTR1R/9wpVuwmUGreILnm2bJNMTIWPwWSfsr4BjiMnLTjZEwnFhRg==}
+    peerDependencies:
+      vue: ^3.2.0
+
+  '@varlet/use@3.8.7':
+    resolution: {integrity: sha512-XipWa1H20G3L0/eqfS25QnlYNSPsrcEgAY9YZZ1PhvbAh9lo9mMrbqpQWKQaVWi6GPWJdU4+Ssdkj9bFvMdtOQ==}
+    peerDependencies:
+      vue: ^3.2.0
 
   '@vitejs/plugin-vue@5.1.2':
     resolution: {integrity: sha512-nY9IwH12qeiJqumTCLJLE7IiNx7HZ39cbHaysEUd+Myvbz9KAqd2yq+U01Kab1R/H1BmiyM2ShTYlNH32Fzo3A==}
@@ -1714,6 +1749,9 @@ packages:
   data-view-byte-offset@1.0.0:
     resolution: {integrity: sha512-t/Ygsytq+R995EJ5PZlD4Cu56sWa8InXySaViRzw9apusqsOO2bQP+SbYzAhR0pFKoB+43lYy8rWban9JSuXnA==}
     engines: {node: '>= 0.4'}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   debounce@1.2.1:
     resolution: {integrity: sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==}
@@ -3088,6 +3126,9 @@ packages:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
   mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
@@ -3520,6 +3561,10 @@ packages:
   quick-lru@5.1.1:
     resolution: {integrity: sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==}
     engines: {node: '>=10'}
+
+  rattail@1.0.17:
+    resolution: {integrity: sha512-EO9spS6qjW/y/5rKBcNkXka1e4udhOqiuUigmPd6aJZOwclkGhDGx9HnUHCz3R8Is8FqXdsqgiSOhV5/r4ynCA==}
+    engines: {pnpm: '>=9.0'}
 
   rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
@@ -4964,6 +5009,9 @@ snapshots:
   '@esbuild/openbsd-x64@0.21.5':
     optional: true
 
+  '@esbuild/openbsd-x64@0.23.1':
+    optional: true
+
   '@esbuild/sunos-x64@0.21.5':
     optional: true
 
@@ -5166,6 +5214,8 @@ snapshots:
       config-chain: 1.1.13
 
   '@polka/url@1.0.0-next.25': {}
+
+  '@popperjs/core@2.11.8': {}
 
   '@rollup/pluginutils@5.1.0(rollup@4.21.0)':
     dependencies:
@@ -5603,6 +5653,31 @@ snapshots:
     transitivePeerDependencies:
       - rollup
       - supports-color
+
+  '@varlet/icons@3.8.7': {}
+
+  '@varlet/import-resolver@3.8.7':
+    dependencies:
+      '@varlet/shared': 3.8.7
+
+  '@varlet/shared@3.8.7':
+    dependencies:
+      rattail: 1.0.17
+
+  '@varlet/ui@3.8.7(vue@3.4.38(typescript@5.5.4))':
+    dependencies:
+      '@popperjs/core': 2.11.8
+      '@varlet/icons': 3.8.7
+      '@varlet/shared': 3.8.7
+      '@varlet/use': 3.8.7(vue@3.4.38(typescript@5.5.4))
+      dayjs: 1.11.13
+      decimal.js: 10.4.3
+      vue: 3.4.38(typescript@5.5.4)
+
+  '@varlet/use@3.8.7(vue@3.4.38(typescript@5.5.4))':
+    dependencies:
+      '@varlet/shared': 3.8.7
+      vue: 3.4.38(typescript@5.5.4)
 
   '@vitejs/plugin-vue@5.1.2(vite@5.4.2(@types/node@22.5.0))(vue@3.4.38(typescript@5.5.4))':
     dependencies:
@@ -6303,6 +6378,8 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.1
 
+  dayjs@1.11.13: {}
+
   debounce@1.2.1: {}
 
   debug@2.6.9:
@@ -6566,6 +6643,7 @@ snapshots:
       '@esbuild/linux-x64': 0.23.1
       '@esbuild/netbsd-x64': 0.23.1
       '@esbuild/openbsd-arm64': 0.23.1
+      '@esbuild/openbsd-x64': 0.23.1
       '@esbuild/sunos-x64': 0.23.1
       '@esbuild/win32-arm64': 0.23.1
       '@esbuild/win32-ia32': 0.23.1
@@ -7878,6 +7956,8 @@ snapshots:
 
   minipass@7.1.2: {}
 
+  mitt@3.0.1: {}
+
   mkdirp@0.5.6:
     dependencies:
       minimist: 1.2.8
@@ -8299,6 +8379,10 @@ snapshots:
   quick-format-unescaped@4.0.4: {}
 
   quick-lru@5.1.1: {}
+
+  rattail@1.0.17:
+    dependencies:
+      mitt: 3.0.1
 
   rc@1.2.8:
     dependencies:

@@ -4,19 +4,26 @@
     <div>Popup</div>
     <SharedSubtitle />
 
+    <template v-for="(rule, index) in redirectRules" :key="rule.id + index">
+      <var-switch />
+    </template>
+
     <button class="btn mt-2" @click="openOptionsPage">
       Open Options
     </button>
     <div class="mt-2">
-      <span class="opacity-50">Storage:</span> {{ storageDemo }}
+      <span class="opacity-50">Storage:</span> {{ JSON.stringify(redirectRules) }}
     </div>
   </main>
 </template>
 
 <script setup lang="ts">
-import { storageDemo } from '~/logic/storage'
+import { redirectRules } from '~/logic/storage'
 
 function openOptionsPage() {
   browser.runtime.openOptionsPage()
 }
 </script>
+
+<style scoped>
+</style>
