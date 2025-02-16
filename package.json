@@ -32,7 +32,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@varlet/ui": "^3.8.7"
+    "@varlet/ui": "^3.8.7",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.27.0",

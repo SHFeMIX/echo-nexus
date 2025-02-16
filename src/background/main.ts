@@ -1,5 +1,6 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import type { Tabs } from 'webextension-polyfill'
+import { MessageType } from '~/logic/cont'
 
 // only on dev mode
 if (import.meta.hot) {
@@ -63,3 +64,7 @@ onMessage('get-current-tab', async () => {
     }
   }
 })
+
+onMessage(MessageType.ADD_RULE, () => 'successly added rule')
+
+onMessage(MessageType.DELETE_RULE, () => 'successly deleted rule')
