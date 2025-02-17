@@ -1,4 +1,8 @@
 export const MessageType = {
-  ADD_RULE: 'add_rule',
-  DELETE_RULE: 'delete_rule',
+  UPDATE_RULES: 'update_rules',
+}
+
+export const ResponseType = {
+  SUCCESS: 'success',
+  ERROR: 'error',
 }

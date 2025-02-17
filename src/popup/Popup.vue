@@ -7,12 +7,13 @@
     <var-button type="primary" round icon-container>
       <var-icon name="plus" />
     </var-button>
-    <div v-for="(val, key) in redirectRules" :key="key" class="form-item">
-      <var-switch v-model="val.active" variant />
-      <var-input v-model="val.urlFilter" variant="outlined" placeholder="请输入要拦截的url" size="small" />
-      <var-input v-model="val.redirectUrl" variant="outlined" placeholder="请输入重定向地址" size="small" />
+    <div v-for="(rule, index) in redirectRules" :key="index" class="form-item">
+      <var-checkbox v-model="rule.active" :disabled="running" />
+      <var-input v-model="rule.urlFilter" variant="outlined" placeholder="请输入要拦截的url" size="small" :disabled="running" />
+      <var-input v-model="rule.redirectUrl" variant="outlined" placeholder="请输入重定向地址" size="small" :disabled="running" />
     </div>
 
+    <var-switch v-model="running" variant @change="toggleSwitch" />
     <button class="btn mt-2">
       Open Options
     </button>
@@ -24,24 +25,40 @@
 
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/popup'
-import { debounce } from 'lodash'
-import type { RulesType } from '~/logic/storage'
+// import { debounce } from 'lodash'
 import { redirectRules } from '~/logic/storage'
-import { MessageType } from '~/logic/cont'
-import watchOldValue from '~/composables/watchOldValue'
+import type { RulesType } from '~/logic/storage'
+import { MessageType, ResponseType } from '~/logic/cont'
 
-watchOldValue(
+const running = ref(false)
+
+function toggleSwitch(value: boolean) {
+  // eslint-disable-next-line no-console
+  console.log(value)
+}
+
+watch(
   redirectRules,
-  debounce((newVal, oldVal) => updateRules(toRaw(newVal), oldVal), 1000),
+  async (newRules: RulesType[]) => {
+    const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify(toRaw(newRules)), 'background')
+
+    if (res === ResponseType.SUCCESS) {
+      Snackbar({
+        type: 'success',
+        duration: 2000,
+        content: '更新成功',
+      })
+    }
+    else {
+      Snackbar({
+        type: 'error',
+        duration: 2000,
+        content: '更新失败，请重试',
+      })
+    }
+  },
   { deep: true },
 )
-
-async function updateRules(newVal: RulesType, oldVal: RulesType) {
-  // console.log('updateRules', newVal, oldVal)
-  // console.log(await sendMessage(MessageType.ADD_RULE), await sendMessage(MessageType.DELETE_RULE))
-  sendMessage(MessageType.ADD_RULE, JSON.stringify(newVal))
-  sendMessage(MessageType.DELETE_RULE, JSON.stringify(oldVal))
-}
 </script>
 
 <style scoped>

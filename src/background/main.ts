@@ -1,6 +1,8 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import type { Tabs } from 'webextension-polyfill'
-import { MessageType } from '~/logic/cont'
+import { RuleActionTypeEnum } from 'webextension-polyfill'
+import { MessageType, ResponseType } from '~/logic/cont'
+import type { RulesType } from '~/logic/storage'
 
 // only on dev mode
 if (import.meta.hot) {
@@ -65,6 +67,39 @@ onMessage('get-current-tab', async () => {
   }
 })
 
-onMessage(MessageType.ADD_RULE, () => 'successly added rule')
+onMessage(MessageType.UPDATE_RULES, async ({ data }) => {
+  try {
+    const newRulesData = JSON.parse(data)
 
-onMessage(MessageType.DELETE_RULE, () => 'successly deleted rule')
+    const currentRules = await browser.declarativeNetRequest.getDynamicRules()
+
+    const newRules = createRules(newRulesData)
+
+    await browser.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: currentRules.map(rule => rule.id),
+      addRules: newRules,
+    })
+
+    return ResponseType.SUCCESS
+  }
+  catch {
+    return ResponseType.ERROR
+  }
+})
+
+function createRules(rules: RulesType[]) {
+  return rules.map((rule, index) => ({
+    id: index,
+    priority: index,
+    action: {
+      type: RuleActionTypeEnum.REDIRECT,
+      redirect: {
+        url: rule.redirectUrl,
+      },
+    },
+    condition: {
+      urlFilter: rule.urlFilter,
+    },
+    resourceTypes: ['main_frame'],
+  }))
+}
