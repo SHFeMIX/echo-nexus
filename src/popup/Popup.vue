@@ -25,39 +25,94 @@
 
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/popup'
-// import { debounce } from 'lodash'
 import { redirectRules } from '~/logic/storage'
-import type { RulesType } from '~/logic/storage'
 import { MessageType, ResponseType } from '~/logic/cont'
 
 const running = ref(false)
 
-function toggleSwitch(value: boolean) {
-  // eslint-disable-next-line no-console
-  console.log(value)
+// 过滤出所有 active 的规则，转换成能发送的形式
+const rulesData = computed(() => {
+  const activeRules = redirectRules.value.filter(rule => rule.active)
+
+  return JSON.stringify(activeRules)
+})
+// 开关打开后，更新规则，如果失败就再关上
+async function startRunning() {
+  const res = await sendMessage(MessageType.UPDATE_RULES, rulesData.value, 'background')
+  const { status } = JSON.parse(res)
+
+  // console.log(data)
+
+  if (status === ResponseType.SUCCESS) {
+    Snackbar({
+      type: 'success',
+      duration: 2000,
+      content: '成功开启拦截',
+    })
+  }
+  else {
+    Snackbar({
+      type: 'error',
+      duration: 2000,
+      content: '开启失败，请重试',
+    })
+    running.value = false
+  }
 }
 
-watch(
-  redirectRules,
-  async (newRules: RulesType[]) => {
-    const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify(toRaw(newRules)), 'background')
+// 开关关闭后，删除所有规则以停止拦截，如果失败就再打开
+async function stopRunning() {
+  const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify([]), 'background')
 
-    if (res === ResponseType.SUCCESS) {
-      Snackbar({
-        type: 'success',
-        duration: 2000,
-        content: '更新成功',
-      })
+  const { status } = JSON.parse(res)
+
+  // console.log(data)
+
+  if (status === ResponseType.SUCCESS) {
+    Snackbar({
+      type: 'success',
+      duration: 2000,
+      content: '成功停止拦截',
+    })
+  }
+  else {
+    Snackbar({
+      type: 'error',
+      duration: 2000,
+      content: '停止失败，请重试',
+    })
+    running.value = true
+  }
+}
+
+function debounceSwitch(switchCallback: (newState: boolean) => void, delay: number) {
+  // 记录点击前的初始状态
+  let initSwtichValue: boolean | null = null
+
+  let timer: NodeJS.Timeout
+  return function (newState: boolean) {
+    clearTimeout(timer)
+
+    // 第一次点击后的状态取反，就是未点击时的状态
+    if (initSwtichValue === null) {
+      initSwtichValue = !newState
     }
-    else {
-      Snackbar({
-        type: 'error',
-        duration: 2000,
-        content: '更新失败，请重试',
-      })
+    // 之后如果点击后状态等于未点击状态，不执行回调
+    else if (newState === initSwtichValue) {
+      return
     }
-  },
-  { deep: true },
+
+    timer = setTimeout(() => {
+      switchCallback(newState)
+      initSwtichValue = null
+    }, delay)
+  }
+}
+
+// 开关加防抖，并且连续点击之后如果结果未改变也不执行回调
+const toggleSwitch = debounceSwitch(
+  (newState: boolean) => newState ? startRunning() : stopRunning(),
+  1500,
 )
 </script>
 

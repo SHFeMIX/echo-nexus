@@ -1,6 +1,5 @@
 import { onMessage, sendMessage } from 'webext-bridge/background'
 import type { Tabs } from 'webextension-polyfill'
-import { RuleActionTypeEnum } from 'webextension-polyfill'
 import { MessageType, ResponseType } from '~/logic/cont'
 import type { RulesType } from '~/logic/storage'
 
@@ -80,19 +79,28 @@ onMessage(MessageType.UPDATE_RULES, async ({ data }) => {
       addRules: newRules,
     })
 
-    return ResponseType.SUCCESS
+    const currentRuleIDs = await browser.declarativeNetRequest.getDynamicRules()
+
+    return JSON.stringify({
+      status: ResponseType.SUCCESS,
+      data: currentRuleIDs,
+    })
   }
-  catch {
-    return ResponseType.ERROR
+  catch (e) {
+    // console.log(e)
+    return JSON.stringify({
+      status: ResponseType.ERROR,
+      data: e,
+    })
   }
 })
 
 function createRules(rules: RulesType[]) {
   return rules.map((rule, index) => ({
-    id: index,
-    priority: index,
+    id: index + 1,
+    priority: index + 1,
     action: {
-      type: RuleActionTypeEnum.REDIRECT,
+      type: 'redirect',
       redirect: {
         url: rule.redirectUrl,
       },
@@ -100,6 +108,5 @@ function createRules(rules: RulesType[]) {
     condition: {
       urlFilter: rule.urlFilter,
     },
-    resourceTypes: ['main_frame'],
   }))
 }
