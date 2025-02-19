@@ -14,13 +14,6 @@
     </div>
 
     <var-switch v-model="running" variant lazy-change :loading="updating" @before-change="handleBeforeChange" />
-
-    <button class="btn mt-2">
-      Open Options
-    </button>
-    <div class="mt-2">
-      <span class="opacity-50">Rules:</span>{{ JSON.stringify(redirectRules) }}
-    </div>
   </main>
 </template>
 
@@ -46,14 +39,14 @@ const running = ref(false)
 // 开关是否正在切换中
 const updating = ref(false)
 
-// 表单可否禁用，正在拦截中或开关正在切换中都禁用
+// 表单是否禁用，正在拦截中或开关正在切换中都禁用
 const nonEditable = computed(() => running.value || updating.value)
 
 // 开关切换前，先做对应的异步更新操作，成功则更改开关状态，失败不更改
-async function handleBeforeChange(value, change) {
+async function handleBeforeChange(value: boolean, change: (value: boolean) => void) {
   updating.value = true
+  await sleep(1000)
 
-  await sleep(3000)
   let result: boolean | null = null
   if (value === true) {
     result = await startRunning()
@@ -62,9 +55,7 @@ async function handleBeforeChange(value, change) {
     result = await stopRunning()
   }
 
-  if (result) {
-    change(value)
-  }
+  result && change(value)
 
   updating.value = false
 }

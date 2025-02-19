@@ -13,4 +13,7 @@ export default antfu({
       }],
     },
   },
+  rules: {
+    'ts/no-unused-expressions': 'off',
+  },
 })
