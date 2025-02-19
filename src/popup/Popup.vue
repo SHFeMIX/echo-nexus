@@ -8,12 +8,13 @@
       <var-icon name="plus" />
     </var-button>
     <div v-for="(rule, index) in redirectRules" :key="index" class="form-item">
-      <var-checkbox v-model="rule.active" :disabled="running" />
-      <var-input v-model="rule.urlFilter" variant="outlined" placeholder="请输入要拦截的url" size="small" :disabled="running" />
-      <var-input v-model="rule.redirectUrl" variant="outlined" placeholder="请输入重定向地址" size="small" :disabled="running" />
+      <var-checkbox v-model="rule.active" :disabled="nonEditable" />
+      <var-input v-model="rule.urlFilter" variant="outlined" placeholder="请输入要拦截的url" size="small" :disabled="nonEditable" />
+      <var-input v-model="rule.redirectUrl" variant="outlined" placeholder="请输入重定向地址" size="small" :disabled="nonEditable" />
     </div>
 
-    <var-switch v-model="running" variant @change="toggleSwitch" />
+    <var-switch v-model="running" variant lazy-change :loading="updating" @before-change="handleBeforeChange" />
+
     <button class="btn mt-2">
       Open Options
     </button>
@@ -28,7 +29,9 @@ import { sendMessage } from 'webext-bridge/popup'
 import { redirectRules } from '~/logic/storage'
 import { MessageType, ResponseType } from '~/logic/cont'
 
-const running = ref(false)
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 // 过滤出所有 active 的规则，转换成能发送的形式
 const rulesData = computed(() => {
@@ -36,12 +39,40 @@ const rulesData = computed(() => {
 
   return JSON.stringify(activeRules)
 })
-// 开关打开后，更新规则，如果失败就再关上
+
+// 是否正在拦截中
+const running = ref(false)
+
+// 开关是否正在切换中
+const updating = ref(false)
+
+// 表单可否禁用，正在拦截中或开关正在切换中都禁用
+const nonEditable = computed(() => running.value || updating.value)
+
+// 开关切换前，先做对应的异步更新操作，成功则更改开关状态，失败不更改
+async function handleBeforeChange(value, change) {
+  updating.value = true
+
+  await sleep(3000)
+  let result: boolean | null = null
+  if (value === true) {
+    result = await startRunning()
+  }
+  else {
+    result = await stopRunning()
+  }
+
+  if (result) {
+    change(value)
+  }
+
+  updating.value = false
+}
+
+// 开关打开后，更新规则，返回结果成功或失败
 async function startRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, rulesData.value, 'background')
   const { status } = JSON.parse(res)
-
-  // console.log(data)
 
   if (status === ResponseType.SUCCESS) {
     Snackbar({
@@ -49,6 +80,8 @@ async function startRunning() {
       duration: 2000,
       content: '成功开启拦截',
     })
+
+    return true
   }
   else {
     Snackbar({
@@ -56,17 +89,16 @@ async function startRunning() {
       duration: 2000,
       content: '开启失败，请重试',
     })
-    running.value = false
+
+    return false
   }
 }
 
-// 开关关闭后，删除所有规则以停止拦截，如果失败就再打开
+// 开关关闭后，删除所有规则以停止拦截，返回结果成功或失败
 async function stopRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify([]), 'background')
 
   const { status } = JSON.parse(res)
-
-  // console.log(data)
 
   if (status === ResponseType.SUCCESS) {
     Snackbar({
@@ -74,6 +106,7 @@ async function stopRunning() {
       duration: 2000,
       content: '成功停止拦截',
     })
+    return true
   }
   else {
     Snackbar({
@@ -81,39 +114,9 @@ async function stopRunning() {
       duration: 2000,
       content: '停止失败，请重试',
     })
-    running.value = true
+    return false
   }
 }
-
-function debounceSwitch(switchCallback: (newState: boolean) => void, delay: number) {
-  // 记录点击前的初始状态
-  let initSwtichValue: boolean | null = null
-
-  let timer: NodeJS.Timeout
-  return function (newState: boolean) {
-    clearTimeout(timer)
-
-    // 第一次点击后的状态取反，就是未点击时的状态
-    if (initSwtichValue === null) {
-      initSwtichValue = !newState
-    }
-    // 之后如果点击后状态等于未点击状态，不执行回调
-    else if (newState === initSwtichValue) {
-      return
-    }
-
-    timer = setTimeout(() => {
-      switchCallback(newState)
-      initSwtichValue = null
-    }, delay)
-  }
-}
-
-// 开关加防抖，并且连续点击之后如果结果未改变也不执行回调
-const toggleSwitch = debounceSwitch(
-  (newState: boolean) => newState ? startRunning() : stopRunning(),
-  1500,
-)
 </script>
 
 <style scoped>
