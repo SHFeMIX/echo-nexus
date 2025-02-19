@@ -36,8 +36,6 @@ export const sharedConfig: UserConfig = {
         },
       ],
       dts: r('src/auto-imports.d.ts'),
-    }),
-    AutoImport({
       resolvers: [VarletImportResolver({ autoImport: true })],
     }),
     // https://github.com/antfu/unplugin-vue-components

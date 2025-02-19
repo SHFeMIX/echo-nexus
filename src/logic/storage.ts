@@ -9,13 +9,11 @@ export interface RulesType {
 
 export const redirectRules = useWebExtensionStorage<RulesType[]>('redirectRules', [
   {
-    active: true,
-    redirectUrl: 'https://www.baidu.com',
-    urlFilter: 'https://www.google.com/*',
-  },
-  {
-    active: true,
-    redirectUrl: 'https://www.baidu.com',
-    urlFilter: 'https://www.google.com/*',
+    active: false,
+    redirectUrl: '',
+    urlFilter: '',
   },
 ])
+
+// 是否正在拦截
+export const running = useWebExtensionStorage<boolean>('running', false)

@@ -1,25 +1,45 @@
 <template>
-  <main class="w-[600px] px-4 py-5 text-center text-gray-700">
-    <Logo />
-    <div>Popup</div>
-    <SharedSubtitle />
-
-    <var-button type="primary" round icon-container>
-      <var-icon name="plus" />
+  <main class="main">
+    <var-button
+      class="add_rules_button" icon-container
+      @click="redirectRules.push({ active: false, redirectUrl: '', urlFilter: '' })"
+    >
+      添加规则 <var-icon name="plus" />
     </var-button>
+
     <div v-for="(rule, index) in redirectRules" :key="index" class="form-item">
       <var-checkbox v-model="rule.active" :disabled="nonEditable" />
-      <var-input v-model="rule.urlFilter" variant="outlined" placeholder="请输入要拦截的url" size="small" :disabled="nonEditable" />
-      <var-input v-model="rule.redirectUrl" variant="outlined" placeholder="请输入重定向地址" size="small" :disabled="nonEditable" />
+
+      <var-input
+        v-model="rule.urlFilter" class="input" variant="outlined" clearable
+        placeholder="请输入请求拦截匹配符" size="small" :disabled="nonEditable"
+      />
+
+      <var-input
+        v-model="rule.redirectUrl" class="input" variant="outlined" clearable
+        placeholder="请输入完整的重定向地址" size="small" :disabled="nonEditable"
+      />
+
+      <var-button
+        round icon-container :disabled="nonEditable || redirectRules.length === 1"
+        @click="redirectRules.length > 1
+          ? redirectRules.splice(index, 1)
+          : redirectRules[0] = { active: false, redirectUrl: '', urlFilter: '' }"
+      >
+        <var-icon name="trash-can" />
+      </var-button>
     </div>
 
-    <var-switch v-model="running" variant lazy-change :loading="updating" @before-change="handleBeforeChange" />
+    <var-switch
+      v-model="running" class="switch" variant lazy-change
+      :loading="updating" @before-change="handleBeforeChange"
+    />
   </main>
 </template>
 
 <script setup lang="ts">
 import { sendMessage } from 'webext-bridge/popup'
-import { redirectRules } from '~/logic/storage'
+import { redirectRules, running } from '~/logic/storage'
 import { MessageType, ResponseType } from '~/logic/cont'
 
 function sleep(ms: number): Promise<void> {
@@ -32,9 +52,6 @@ const rulesData = computed(() => {
 
   return JSON.stringify(activeRules)
 })
-
-// 是否正在拦截中
-const running = ref(false)
 
 // 开关是否正在切换中
 const updating = ref(false)
@@ -68,7 +85,7 @@ async function startRunning() {
   if (status === ResponseType.SUCCESS) {
     Snackbar({
       type: 'success',
-      duration: 2000,
+      duration: 1500,
       content: '成功开启拦截',
     })
 
@@ -77,7 +94,7 @@ async function startRunning() {
   else {
     Snackbar({
       type: 'error',
-      duration: 2000,
+      duration: 1500,
       content: '开启失败，请重试',
     })
 
@@ -111,9 +128,24 @@ async function stopRunning() {
 </script>
 
 <style scoped>
+.main {
+  width: 600px;
+  margin: 30px;
+}
+
+.add_rules_button {
+
+}
+
 .form-item {
+  margin: 10px 0;
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+
+  >.input {
+    margin-right: 10px;
+    width: 300px;
+    --field-decorator-placeholder-size: 14px;
+  }
 }
 </style>

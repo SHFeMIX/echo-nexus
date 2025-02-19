@@ -87,10 +87,9 @@ onMessage(MessageType.UPDATE_RULES, async ({ data }) => {
     })
   }
   catch (e) {
-    // console.log(e)
     return JSON.stringify({
       status: ResponseType.ERROR,
-      data: e,
+      error: e instanceof Error ? e.message : String(e),
     })
   }
 })
