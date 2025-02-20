@@ -22,9 +22,7 @@
 
       <var-button
         round icon-container :disabled="nonEditable || redirectRules.length === 1"
-        @click="redirectRules.length > 1
-          ? redirectRules.splice(index, 1)
-          : redirectRules[0] = { active: false, redirectUrl: '', urlFilter: '' }"
+        @click="redirectRules.splice(index, 1)"
       >
         <var-icon name="trash-can" />
       </var-button>
