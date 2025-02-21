@@ -40,6 +40,7 @@ export async function getManifest() {
       'activeTab',
       'sidePanel',
       'declarativeNetRequest',
+      'declarativeNetRequestFeedback',
     ],
     host_permissions: ['*://*/*'],
     content_scripts: [

@@ -70,9 +70,10 @@ onMessage(MessageType.UPDATE_RULES, async ({ data }) => {
   try {
     const newRulesData = JSON.parse(data)
 
-    const currentRules = await browser.declarativeNetRequest.getDynamicRules()
+    // 将收到的数据转化成可添加的规则，并加上允许跨域的规则
+    const newRules = [...createRules(newRulesData), corsRule(newRulesData.length + 1)]
 
-    const newRules = createRules(newRulesData)
+    const currentRules = await browser.declarativeNetRequest.getDynamicRules()
 
     await browser.declarativeNetRequest.updateDynamicRules({
       removeRuleIds: currentRules.map(rule => rule.id),
@@ -108,4 +109,35 @@ function createRules(rules: RulesType[]) {
       urlFilter: rule.urlFilter,
     },
   }))
+}
+
+function corsRule(id: number) {
+  return {
+    id,
+    priority: 1,
+    condition: {
+      urlFilter: '*',
+      // resourceTypes: ['xmlhttprequest'],
+    },
+    action: {
+      type: 'modifyHeaders',
+      responseHeaders: [
+        {
+          header: 'Access-Control-Allow-Origin',
+          operation: 'set',
+          value: '*', // 允许所有源
+        },
+        {
+          header: 'Access-Control-Allow-Methods',
+          operation: 'set',
+          value: 'GET, POST, PUT, DELETE, OPTIONS', // 允许的请求方法
+        },
+        {
+          header: 'Access-Control-Allow-Headers',
+          operation: 'set',
+          value: 'Content-Type, Authorization', // 允许的请求头
+        },
+      ],
+    },
+  }
 }

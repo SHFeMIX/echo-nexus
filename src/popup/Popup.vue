@@ -1,7 +1,7 @@
 <template>
   <main class="main">
     <var-button
-      class="add_rules_button" icon-container
+      class="add_rules_button" icon-container :disabled="nonEditable"
       @click="redirectRules.push({ active: false, redirectUrl: '', urlFilter: '' })"
     >
       添加规则 <var-icon name="plus" />
@@ -78,7 +78,7 @@ async function handleBeforeChange(value: boolean, change: (value: boolean) => vo
 // 开关打开后，更新规则，返回结果成功或失败
 async function startRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, rulesData.value, 'background')
-  const { status } = JSON.parse(res)
+  const { status, error } = JSON.parse(res)
 
   if (status === ResponseType.SUCCESS) {
     Snackbar({
@@ -90,6 +90,8 @@ async function startRunning() {
     return true
   }
   else {
+    console.error(error)
+
     Snackbar({
       type: 'error',
       duration: 1500,
@@ -104,7 +106,7 @@ async function startRunning() {
 async function stopRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify([]), 'background')
 
-  const { status } = JSON.parse(res)
+  const { status, error } = JSON.parse(res)
 
   if (status === ResponseType.SUCCESS) {
     Snackbar({
@@ -115,6 +117,8 @@ async function stopRunning() {
     return true
   }
   else {
+    console.error(error)
+
     Snackbar({
       type: 'error',
       duration: 2000,
