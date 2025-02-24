@@ -78,9 +78,11 @@ async function handleBeforeChange(value: boolean, change: (value: boolean) => vo
 // 开关打开后，更新规则，返回结果成功或失败
 async function startRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, rulesData.value, 'background')
-  const { status, error } = JSON.parse(res)
+  const { status, data, error } = JSON.parse(res)
 
   if (status === ResponseType.SUCCESS) {
+    console.log('成功添加规则：', data)
+
     Snackbar({
       type: 'success',
       duration: 1500,
@@ -106,9 +108,11 @@ async function startRunning() {
 async function stopRunning() {
   const res = await sendMessage(MessageType.UPDATE_RULES, JSON.stringify([]), 'background')
 
-  const { status, error } = JSON.parse(res)
+  const { status, data, error } = JSON.parse(res)
 
   if (status === ResponseType.SUCCESS) {
+    console.log('成功删除所有规则', data)
+
     Snackbar({
       type: 'success',
       duration: 2000,
