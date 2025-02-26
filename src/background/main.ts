@@ -81,6 +81,11 @@ function createCorsRule(rules: RulesType[]) {
           operation: 'set',
           value: 'Content-Type, Authorization', // 允许的请求头
         },
+        {
+          header: 'Access-Control-Max-Age',
+          operation: 'set',
+          value: '86400', // 预检结果缓存 24 小时
+        },
       ],
     },
   }))
